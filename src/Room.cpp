@@ -5,22 +5,23 @@
  * @date 2023-11
  */
 
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <iomanip>
-#include <sstream>
-#include <fstream>
 
-#include "Item.h"
-#include "Puzzle.h"
-#include "Character.h"
-#include "RoomState.h"
-#include "Room.h"
-#include "GameTypes.h"
+#include "../include/Character.hpp"
+#include "../include/GameTypes.hpp"
+#include "../include/Item.hpp"
+#include "../include/Puzzle.hpp"
+#include "../include/Room.hpp"
+#include "../include/RoomState.hpp"
 
 Room::Room(std::string title, std::string description,
-    const std::vector<std::string>& connections) {
-      state = new UnexploredRoom();
+           const std::vector<std::string> &connections) {
+  state = new UnexploredRoom();
   if (title != "")
     this->title = title;
 
@@ -64,60 +65,41 @@ Room::Room(std::string title, std::string description,
     this->connections = connections;
 }
 
-Room::~Room() {
-  delete state;
-}
+Room::~Room() { delete state; }
 
-RoomState &Room::getState() {
-  return *state;
-}
+RoomState &Room::getState() { return *state; }
 
-void Room::playerEnterRoom(Player* player) {
-  this->player = player;
-}
+void Room::playerEnterRoom(Player *player) { this->player = player; }
 
-std::string Room::getTitle() const {
-  return title;
-}
+std::string Room::getTitle() const { return title; }
 
-std::vector<std::string> Room::getConnections() {
-  return connections;
-}
+std::vector<std::string> Room::getConnections() { return connections; }
 
-void Room::entered() {
-  state = new ExploredRoom();
-}
+void Room::entered() { state = new ExploredRoom(); }
 
-GameTypes::RoomTypes Room::getRoomType() const {
-  return roomtype;
-}
+GameTypes::RoomTypes Room::getRoomType() const { return roomtype; }
 
-bool Room::isDone() {
-  return state->roomDone();
-}
+bool Room::isDone() { return state->roomDone(); }
 
-void Room::setState(RoomState *state) {
-  this->state = state;
-}
+void Room::setState(RoomState *state) { this->state = state; }
 
 //----------------------------------------------------------
 
 DialogueRoom::DialogueRoom(std::string title, std::string description,
-    const std::vector<std::string>& connections, const NPC &fella) :
-    Room(title, description, connections) {
+                           const std::vector<std::string> &connections,
+                           const NPC &fella)
+    : Room(title, description, connections) {
   this->roomtype = GameTypes::DIALOGUE_ROOM;
   this->fella = new NPC(fella);
 }
 
-DialogueRoom::~DialogueRoom() {
-  delete fella;
-}
+DialogueRoom::~DialogueRoom() { delete fella; }
 
 bool DialogueRoom::playerTakeAction() {
   std::string input = "";
   while (input != "y" && input != "n") {
-    std::cout << "Would you like to talk to " << fella->getName()
-              << "? [y/n]" << std::endl;
+    std::cout << "Would you like to talk to " << fella->getName() << "? [y/n]"
+              << std::endl;
     std::cin >> input;
   }
   if (input == "y") {
@@ -134,29 +116,28 @@ bool DialogueRoom::playerTakeAction() {
 
 void DialogueRoom::display() const {
   if (state->isExplored() && !state->roomDone() ||
-    !state->isExplored() && !state->roomDone()) {
-  std::ostringstream stringReader;
-  stringReader << std::setw(25);
-  stringReader << title;
-  stringReader << '\n' << '\n';
-  stringReader << description;
-  stringReader << '\n' << '\n';
-  std::cout << stringReader.str() << std::endl;
-}
+      !state->isExplored() && !state->roomDone()) {
+    std::ostringstream stringReader;
+    stringReader << std::setw(25);
+    stringReader << title;
+    stringReader << '\n' << '\n';
+    stringReader << description;
+    stringReader << '\n' << '\n';
+    std::cout << stringReader.str() << std::endl;
+  }
 }
 //------------------------------------------------------------------
 
-ThinkingPuzzleRoom::ThinkingPuzzleRoom(std::string title,
-    std::string description, const std::vector<std::string>& connections,
+ThinkingPuzzleRoom::ThinkingPuzzleRoom(
+    std::string title, std::string description,
+    const std::vector<std::string> &connections,
     const DialoguePuzzle &dialoguePuzzle)
-          : Room(title, description, connections) {
+    : Room(title, description, connections) {
   this->roomtype = GameTypes::PUZZLE_ROOM;
   this->dialoguePuzzle = new DialoguePuzzle(dialoguePuzzle);
 }
 
-ThinkingPuzzleRoom::~ThinkingPuzzleRoom() {
-  delete dialoguePuzzle;
-}
+ThinkingPuzzleRoom::~ThinkingPuzzleRoom() { delete dialoguePuzzle; }
 
 bool ThinkingPuzzleRoom::playerTakeAction() {
   std::string takeAction = "";
@@ -192,7 +173,7 @@ bool ThinkingPuzzleRoom::playerTakeAction() {
 
 void ThinkingPuzzleRoom::display() const {
   if (state->isExplored() && !state->roomDone() ||
-    !state->isExplored() && !state->roomDone()) {
+      !state->isExplored() && !state->roomDone()) {
     std::ostringstream stringReader;
     stringReader << std::setw(25);
     stringReader << title;
@@ -200,25 +181,24 @@ void ThinkingPuzzleRoom::display() const {
     stringReader << description;
     stringReader << '\n' << '\n';
     stringReader << "This room is locked, solve a complicated"
-                  " question to unlock more rooms:\n" <<
-                  dialoguePuzzle->toString();
+                    " question to unlock more rooms:\n"
+                 << dialoguePuzzle->toString();
     std::cout << stringReader.str() << std::endl;
   }
 }
 
 //------------------------------------------------------------------------
-//You can't leave and you can't use item
+// You can't leave and you can't use item
 
 ItemPuzzleRoom::ItemPuzzleRoom(std::string title, std::string description,
-    const std::vector<std::string>& connections, const ItemPuzzle &itemPuzzle) :
-    Room(title, description, connections) {
+                               const std::vector<std::string> &connections,
+                               const ItemPuzzle &itemPuzzle)
+    : Room(title, description, connections) {
   this->roomtype = GameTypes::PUZZLE_ROOM;
   this->itemPuzzle = new ItemPuzzle(itemPuzzle);
 }
 
-ItemPuzzleRoom::~ItemPuzzleRoom() {
-  delete itemPuzzle;
-}
+ItemPuzzleRoom::~ItemPuzzleRoom() { delete itemPuzzle; }
 
 bool ItemPuzzleRoom::playerTakeAction() {
   std::string takeAction = "";
@@ -234,10 +214,11 @@ bool ItemPuzzleRoom::playerTakeAction() {
     std::cin >> input;
   }
   if (input == "s") {
-    Item* temp;
+    Item *temp;
     while (!itemPuzzle->wasSolved()) {
       std::cout << "To inspect inventory enter [i]\n"
-                   "To exit this loop enter    [q]" << std::endl;
+                   "To exit this loop enter    [q]"
+                << std::endl;
       std::cin >> takeAction;
       if (takeAction != "q") {
         temp = player->useItem();
@@ -259,16 +240,16 @@ bool ItemPuzzleRoom::playerTakeAction() {
 
 void ItemPuzzleRoom::display() const {
   if (state->isExplored() && !state->roomDone() ||
-    !state->isExplored() && !state->roomDone()) {
+      !state->isExplored() && !state->roomDone()) {
     std::ostringstream stringReader;
     stringReader << std::setw(25);
     stringReader << title;
     stringReader << '\n' << '\n';
     stringReader << description;
     stringReader << '\n' << '\n';
-    stringReader << "This room is a dead end " <<
-                   itemPuzzle->getExpectedItemName() <<
-              " required to unlock more rooms!";
+    stringReader << "This room is a dead end "
+                 << itemPuzzle->getExpectedItemName()
+                 << " required to unlock more rooms!";
     stringReader << '\n' << '\n';
     std::cout << stringReader.str() << std::endl;
   }
@@ -277,21 +258,20 @@ void ItemPuzzleRoom::display() const {
 //------------------------------------------------------------------------
 
 ItemRoom::ItemRoom(std::string title, std::string description,
-    const std::vector<std::string>& connections,
-    const Item &i) : Room(title, description, connections) {
+                   const std::vector<std::string> &connections, const Item &i)
+    : Room(title, description, connections) {
   this->roomtype = GameTypes::ITEM_ROOM;
   this->item = new Item(i);
 }
 
-ItemRoom::~ItemRoom() {
-  delete item;
-}
+ItemRoom::~ItemRoom() { delete item; }
 
 bool ItemRoom::playerTakeAction() {
   std::string input = "";
   while (input != "y" && input != "n") {
     std::cout << "Would you like to pick up this: " + item->getName() +
-                 "? [y/n]" << std::endl;
+                     "? [y/n]"
+              << std::endl;
     std::cin >> input;
   }
   if (input == "y") {
@@ -307,7 +287,7 @@ bool ItemRoom::playerTakeAction() {
 
 void ItemRoom::display() const {
   if (state->isExplored() && !state->roomDone() ||
-    !state->isExplored() && !state->roomDone()) {
+      !state->isExplored() && !state->roomDone()) {
     std::ostringstream stringReader;
     stringReader << std::setw(25);
     stringReader << title;
@@ -319,6 +299,4 @@ void ItemRoom::display() const {
   }
 }
 
-Item &ItemRoom::giveItem() {
-  return *item;
-}
+Item &ItemRoom::giveItem() { return *item; }

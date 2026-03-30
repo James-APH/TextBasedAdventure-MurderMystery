@@ -3,23 +3,23 @@
  * @author Raven Huery [raven.huery@uleth.ca]
  * @author Parker Regier [tyre.regier@uleth.ca]
  * @date 2023-11
+ * @updated 2026-03
+ *
  */
 
-#ifndef ROOMLIST_H_INCLUDED
-#define ROOMLIST_H_INCLUDED
+#ifndef ROOMLIST_HPP
+#define ROOMLIST_HPP
 
-#include "Room.h"
-
+#include "Room.hpp"
 
 class RoomNode {
- public:
+public:
   /**
    * @brief constructor for RoomNodes
    * @param r pointer to Room object
    * @throw de_trop_nullptr if r is nullptr
    */
-  RoomNode(Room* r);
-
+  RoomNode(Room *r);
 
   /**
    * @brief destuctor
@@ -30,7 +30,7 @@ class RoomNode {
    * @brief returns a pointer to a room
    * @return _room, a pointer to a room
    */
-  Room* getRoom();
+  Room *getRoom();
 
   /**
    * @brief returns a pointer to a possible room
@@ -39,7 +39,7 @@ class RoomNode {
    * returns a pointer to that room.
    * else returns nullptr
    */
-  RoomNode* getUpNode();
+  RoomNode *getUpNode();
 
   /**
    * @brief returns a pointer to a possible room
@@ -48,7 +48,7 @@ class RoomNode {
    * returns a pointer to that room.
    * else returns nullptr
    */
-  RoomNode* getDownNode();
+  RoomNode *getDownNode();
 
   /**
    * @brief returns a pointer to a possible room
@@ -57,7 +57,7 @@ class RoomNode {
    * returns a pointer to that room.
    * else returns nullptr
    */
-  RoomNode* getNorthNode();
+  RoomNode *getNorthNode();
 
   /**
    * @brief returns a pointer to a possible room
@@ -66,7 +66,7 @@ class RoomNode {
    * returns a pointer to that room.
    * else returns nullptr
    */
-  RoomNode* getEastNode();
+  RoomNode *getEastNode();
 
   /**
    * @brief returns a pointer to a possible room
@@ -76,7 +76,7 @@ class RoomNode {
    * else returns nullptr
    *
    */
-  RoomNode* getSouthNode();
+  RoomNode *getSouthNode();
 
   /**
    * @brief returns a pointer to a possible room
@@ -85,7 +85,7 @@ class RoomNode {
    * returns a pointer to that room.
    * else returns nullptr
    */
-  RoomNode* getWestNode();
+  RoomNode *getWestNode();
 
   /**
    * @brief setter for the next node on each roomNode
@@ -97,83 +97,83 @@ class RoomNode {
    * linked list.
    * @param[in] nextNode the nextNode in the list.
    */
-  void setNextNode(RoomNode* nextNode);
+  void setNextNode(RoomNode *nextNode);
 
   /**
    * @brief getter for next node
    * @return the next node in the linked list
    */
-  RoomNode* getNextNode();
+  RoomNode *getNextNode();
 
   /**
    * @brief sets the current rooms up pointer
    * @param [in] up the pointer to the room above the current
    * @throw de_trop_nullptr if up is nullptr
    */
-    void setUpNode(RoomNode* up);
+  void setUpNode(RoomNode *up);
 
   /**
    * @brief sets the current rooms down pointer
    * @param [in] down the pointer to the room below the current
    * @throw de_trop_nullptr if up is nullptr
    */
-  void setDownNode(RoomNode* down);
+  void setDownNode(RoomNode *down);
 
   /**
    * @brief sets the current rooms north pointer
    * @param [in] north the pointer to the room north of the current
    * @throw de_trop_nullptr if up is nullptr
    */
-  void setNorthNode(RoomNode* north);
+  void setNorthNode(RoomNode *north);
 
   /**
    * @brief sets the current rooms east pointer
    * @param [in] east the pointer to the room east of the current
    * @throw de_trop_nullptr if up is nullptr
    */
-  void setEastNode(RoomNode* east);
+  void setEastNode(RoomNode *east);
 
   /**
    * @brief sets the current rooms south pointer
    * @param south the pointer to the room south of the current
    * @throw de_trop_nullptr if up is nullptr
    */
-  void setSouthNode(RoomNode* south);
+  void setSouthNode(RoomNode *south);
 
   /**
    * @brief sets the current rooms west pointer
    * @param west the pointer to the room west of the current
    * @throw de_trop_nullptr if up is nullptr
    */
-  void setWestNode(RoomNode* west);
+  void setWestNode(RoomNode *west);
 
   /**
-  * @brief sets the previousNode
-  * @param previousNode the previousNode
-  * @throw de_trop_nullptr if previousNode is nullptr
-  */
-  void setPreviousNode(RoomNode* previousNode);
+   * @brief sets the previousNode
+   * @param previousNode the previousNode
+   * @throw de_trop_nullptr if previousNode is nullptr
+   */
+  void setPreviousNode(RoomNode *previousNode);
 
   /**
    * @brief getter for previousNode
-  */
-  RoomNode* getPreviousNode();
+   */
+  RoomNode *getPreviousNode();
 
- private:
+private:
   // up down nesw
-  Room* room;
-  RoomNode* up;
-  RoomNode* down;
-  RoomNode* north;
-  RoomNode* east;
-  RoomNode* south;
-  RoomNode* west;
-  RoomNode* next;
-  RoomNode* previousNode;
+  Room *room;
+  RoomNode *up;
+  RoomNode *down;
+  RoomNode *north;
+  RoomNode *east;
+  RoomNode *south;
+  RoomNode *west;
+  RoomNode *next;
+  RoomNode *previousNode;
 };
 
 class RoomList {
- public:
+public:
   /**
    * @brief default constructor
    */
@@ -189,14 +189,12 @@ class RoomList {
    * @param[in] room the room to be added
    * @throw de_trop_nullptr if room is nullptr
    */
-  void insert(Room* room);
-
+  void insert(Room *room);
 
   /**
    * @brief makes the room list into a circly linked list
-  */
+   */
   void circley();
-
 
   /**
    * @brief method to be called once all nodes have been set to
@@ -213,14 +211,13 @@ class RoomList {
 
   /**
    * @brief getter for head
-  */
-  RoomNode* getHead();
+   */
+  RoomNode *getHead();
 
- private:
+private:
   const int UP = 0, DOWN = 1, NORTH = 2, EAST = 3, SOUTH = 4, WEST = 5;
-  RoomNode* head;
-  RoomNode* tail;
+  RoomNode *head;
+  RoomNode *tail;
 };
 
-#endif //ROOMLIST_H_INCLUDED
-
+#endif /* ROOMLIST_HPP */

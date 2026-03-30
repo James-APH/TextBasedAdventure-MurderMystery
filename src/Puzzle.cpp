@@ -6,81 +6,69 @@
  */
 
 #include <iostream>
-#include <string>
-#include <iomanip>
 #include <sstream>
+#include <string>
 
-#include "Puzzle.h"
-#include "Item.h"
+#include "../include/Item.hpp"
+#include "../include/Puzzle.hpp"
 
-
-
-Puzzle::Puzzle(std::string description) {
-    this->description = description;
-}
-
+Puzzle::Puzzle(std::string description) { this->description = description; }
 
 Puzzle::~Puzzle() {}
 
-bool Puzzle::wasSolved() const {
-    return solved;
-}
+bool Puzzle::wasSolved() const { return solved; }
 
 std::string Puzzle::toString() {
-    std::ostringstream stringReader;
-    stringReader << description;
-    return stringReader.str();
+  std::ostringstream stringReader;
+  stringReader << description;
+  return stringReader.str();
 }
 
 //-------------------------------------------------------------
 
-
 DialoguePuzzle::DialoguePuzzle(std::string description,
-                        std::string expectedInput)
-                        : Puzzle(description) {
-                            this->expectedInput = expectedInput;
-                            }
+                               std::string expectedInput)
+    : Puzzle(description) {
+  this->expectedInput = expectedInput;
+}
 
-DialoguePuzzle::DialoguePuzzle(const DialoguePuzzle& dialoguePuzzle) {
-    this->description = dialoguePuzzle.description;
-    this->expectedInput = dialoguePuzzle.expectedInput;
+DialoguePuzzle::DialoguePuzzle(const DialoguePuzzle &dialoguePuzzle) {
+  this->description = dialoguePuzzle.description;
+  this->expectedInput = dialoguePuzzle.expectedInput;
 }
 
 DialoguePuzzle::~DialoguePuzzle() {}
 
 void DialoguePuzzle::getInput(std::string answer) {
-    if (answer == expectedInput) {
-        std::cout << "Correct!\n";
-        solved = true;
-    } else {
-        std::cout << "Incorrect.\n";
-    }
+  if (answer == expectedInput) {
+    std::cout << "Correct!\n";
+    solved = true;
+  } else {
+    std::cout << "Incorrect.\n";
+  }
 }
 
-ItemPuzzle::ItemPuzzle(std::string description, const Item &item) :
-                Puzzle(description) {
-                    expectedItem = new Item(item);
+ItemPuzzle::ItemPuzzle(std::string description, const Item &item)
+    : Puzzle(description) {
+  expectedItem = new Item(item);
 }
 
-ItemPuzzle::ItemPuzzle(const ItemPuzzle& itemPuzzle) {
-    this->description = itemPuzzle.description;
-    this->expectedItem = new Item(*itemPuzzle.expectedItem);
+ItemPuzzle::ItemPuzzle(const ItemPuzzle &itemPuzzle) {
+  this->description = itemPuzzle.description;
+  this->expectedItem = new Item(*itemPuzzle.expectedItem);
 }
 
-
-ItemPuzzle::~ItemPuzzle() {
-    delete expectedItem;
-}
+ItemPuzzle::~ItemPuzzle() { delete expectedItem; }
 
 std::string ItemPuzzle::getExpectedItemName() const {
-    return expectedItem->getName();
+  return expectedItem->getName();
 }
 
 void ItemPuzzle::checkItem(const Item &item) {
-    if (expectedItem->equals(item)) {
-        std::cout << "Correct!\n";
-        solved = true;
-        } else {
-        std::cout << "Incorrect.\n";
-    }
+  if (expectedItem->equals(item)) {
+    std::cout << "Correct!\n";
+    solved = true;
+  } else {
+    std::cout << "Incorrect.\n";
+  }
 }

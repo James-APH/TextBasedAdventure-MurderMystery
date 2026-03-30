@@ -5,18 +5,15 @@
  * @date 2023-11
  */
 
-#include <string>
-#include <sstream>
-#include <iomanip>
-#include <algorithm>
-#include <list>
 #include <fstream>
-#include <limits>
+#include <iomanip>
+#include <iostream>
+#include <list>
+#include <sstream>
+#include <string>
 
-#include "Item.h"
-#include "Character.h"
-
-
+#include "../include/Character.hpp"
+#include "../include/Item.hpp"
 
 Character::Character(std::string name) {
   if (name != "") {
@@ -26,9 +23,7 @@ Character::Character(std::string name) {
 
 Character::~Character() {}
 
-std::string Character::getName() {
-  return name;
-}
+std::string Character::getName() { return name; }
 
 NPC::NPC(std::string name, std::string dialogue) : Character(name) {
   std::string fileName;
@@ -66,16 +61,13 @@ NPC::~NPC() {}
 void NPC::display() const {
   std::ostringstream stringReader;
   stringReader << std::setw(25);
-  stringReader << "\n\nHello detective, my name is "
-   << name << "!" << '\n';
+  stringReader << "\n\nHello detective, my name is " << name << "!" << '\n';
   stringReader << dialogue << std::endl;
 
   std::cout << stringReader.str() << std::endl;
 }
 
-Player::Player(std::string name, const Item& item)
-  : Character(name) {
-}
+Player::Player(std::string name, const Item &item) : Character(name) {}
 
 Player::~Player() {
   for (auto it : itemList) {
@@ -85,25 +77,27 @@ Player::~Player() {
   itemList.clear();
 }
 
-void Player::pickUp(const Item& item) {
+void Player::pickUp(const Item &item) {
   if (findItem(item)) {
     std::cout << "\nItem already exists in inventory!" << std::endl;
   } else {
-      itemList.push_back(new Item(item));
-      std::cout << "\nItem added to inventory!" << std::endl;
+    itemList.push_back(new Item(item));
+    std::cout << "\nItem added to inventory!" << std::endl;
   }
 }
 
 void Player::drop() {
   std::string itemName;
   std::cout << "Enter the name of the item you'd like to drop,\n"
-               "Otherwise enter q to quit!" << std::endl;
+               "Otherwise enter q to quit!"
+            << std::endl;
   std::getline(std::cin, itemName);
   if (!findItem(itemName) && itemName != "q") {
     while (findItem(itemName) == false && itemName != "q") {
-        std::cout << "Enter the name of the item you'd like to drop,\n"
-                     "Otherwise enter q to quit!" << std::endl;
-        std::getline(std::cin, itemName);
+      std::cout << "Enter the name of the item you'd like to drop,\n"
+                   "Otherwise enter q to quit!"
+                << std::endl;
+      std::getline(std::cin, itemName);
     }
   }
   if (itemName != "q") {
@@ -119,13 +113,15 @@ void Player::drop() {
 void Player::InspectItem() const {
   std::string itemName;
   std::cout << "\nEnter the name of the item you'd like to inspect,\n"
-               "Otherwise enter q to quit!" << std::endl;
+               "Otherwise enter q to quit!"
+            << std::endl;
   std::getline(std::cin, itemName);
   if (!findItem(itemName) && itemName != "q") {
     while (findItem(itemName) == false && itemName != "q") {
-        std::cout << "\nEnter the name of the item you'd like to inspect,\n"
-               "Otherwise enter q to quit!" << std::endl;
-        std::getline(std::cin, itemName);
+      std::cout << "\nEnter the name of the item you'd like to inspect,\n"
+                   "Otherwise enter q to quit!"
+                << std::endl;
+      std::getline(std::cin, itemName);
     }
   }
   if (itemName != "q") {
@@ -139,34 +135,36 @@ void Player::InspectItem() const {
 
 void Player::listInventory() const {
   std::cout << "\nYou have the following itmes: \n\n";
-    for (auto it : itemList) {
-      std::cout << it->toString() << "\n" <<std::endl;
-    }
+  for (auto it : itemList) {
+    std::cout << it->toString() << "\n" << std::endl;
+  }
 }
 
-Item* Player::useItem() {
+Item *Player::useItem() {
   std::string itemName = "";
   std::cout << "Enter the name of the item you'd like to use\n"
-               "Otherwise enter q to quit" << std::endl;
+               "Otherwise enter q to quit"
+            << std::endl;
   std::cin >> itemName;
   while (!findItem(itemName)) {
-      std::cout << "Enter the name of the item you'd like to use\n"
-             "Otherwise enter q to quit!" << std::endl;
-        std::cin >> itemName;
-      if (itemName == "q")
-        break;
+    std::cout << "Enter the name of the item you'd like to use\n"
+                 "Otherwise enter q to quit!"
+              << std::endl;
+    std::cin >> itemName;
+    if (itemName == "q")
+      break;
   }
   if (itemName != "q") {
-      for (auto it : itemList) {
-        if (it->getName() == itemName) {
-          return it;
+    for (auto it : itemList) {
+      if (it->getName() == itemName) {
+        return it;
       }
     }
   }
   return nullptr;
 }
 
-bool Player::findItem(const Item& item) const {
+bool Player::findItem(const Item &item) const {
   for (auto it : itemList) {
     if (it->equals(item))
       return true;

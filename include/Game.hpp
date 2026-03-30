@@ -1,0 +1,202 @@
+/**
+ * @author James Huston [huston@uleth.ca]
+ * @author Raven Huery [raven.huery@uleth.ca]
+ * @author Parker Regier [tyre.regier@uleth.ca]
+ * @date 2023-11
+ * @updated 2026-03
+ *
+ */
+
+#ifndef GAME_HPP
+#define GAME_HPP
+
+#include <string>
+
+#include "Character.hpp"
+#include "Item.hpp"
+#include "Puzzle.hpp"
+#include "RoomList.hpp"
+
+/**
+ * @class Game in Game.h "Game.h"
+ * @details this class will handle
+ * the majority of the game logic, i.e
+ * the output the user will actually see
+ * for future james, in this class
+ * we will add a function to start the
+ * game, a function to output splash screens
+ * a function to play the game
+ * a function to build all of the npcs
+ * a function to build all of the rooms
+ * a list of all of the rooms (I may use
+ * another class to manage this)
+ * NPC dave("", "");
+
+    roomlist->insert(new DialogueRoom("Garden", "its a garden",
+    {"", "", "Front Hall", "", "", ""}, dave));
+ */
+class Game {
+public:
+  /**
+   * @brief default constructor
+   * @param [in] playerName the name of the Player
+   */
+  Game(std::string playerName = "Detective");
+
+  /**
+   * @brief destructor
+   */
+  virtual ~Game();
+
+  /**
+   * @brief function to initiate and run the game.
+   */
+  void playGame();
+
+private:
+  const int UP = 0, DOWN = 1, NORTH = 2, EAST = 3, SOUTH = 4, WEST = 5;
+
+  Player *player;
+
+  RoomNode *currentNode;
+
+  RoomList *roomlist = new RoomList();
+  // Item declarations:
+  Item *yellowKeyCard =
+      new Item("YellowKeyCard", "East Hallway", "It opens doors");
+
+  Item *blueKeyCard =
+      new Item("BlueKeyCard", "North Hallway", "It opens doors");
+
+  Item *redKeyCard = new Item("RedKeyCard", "West Hallway", "It opens doors");
+
+  Item *knife = new Item("It's a knife", "Garden End",
+                         "That crest look complicated (a rearing"
+                         " lion in front of crossed swords)");
+
+  Item *pictureFrame = new Item("It's a picture", "Garden End",
+                                "Hey is that brent standing beside Scott?");
+
+  Item *will = new Item("It's a will", "Garden End",
+                        "It was drafted a long time ago. Looks like"
+                        " Scott is the one to inherit everything");
+
+  Item *map = new Item("Its a map of the building", "Everywhere", "unset");
+
+  // Item puzzle declarations:
+  ItemPuzzle *yellowItemPuzzle =
+      new ItemPuzzle("this lock requires a yellow key card", *yellowKeyCard);
+
+  ItemPuzzle *blueItemPuzzle =
+      new ItemPuzzle("This lock requires a blue key card", *blueKeyCard);
+
+  ItemPuzzle *redItemPuzzle =
+      new ItemPuzzle("This lock requires a red key card", *redKeyCard);
+
+  // Dialogue Puzzle
+  DialoguePuzzle *studyPuzzle = new DialoguePuzzle(
+      "1. The first digit is"
+      " prime\n2. The second digit is even\n3. The third digit is a prime"
+      " is the square of the first digit\n4. The sum of all three digits"
+      " is 20",
+      "389");
+  DialoguePuzzle *libraryPuzzle = new DialoguePuzzle(
+      "1. The first digit is"
+      " the largest prime number under 10\n2. The second digit is the sum of "
+      "the"
+      " first and third digits\n3. the third digit is half of the first and"
+      " must be whole number\n4. The product of all three is 6",
+      "231");
+  DialoguePuzzle *atticPuzzle = new DialoguePuzzle(
+      "1. The first digit is a"
+      " multiple of 3\n2. The second digit is one less than first digit\n3. The"
+      " third digit is the sum of the first and second digits\n4. The product "
+      "of"
+      " akk three is 30",
+      "325");
+
+  // NPC declarations
+  NPC *craig = new NPC("Craig", "Craig dialogue");
+  NPC *steph = new NPC("Stephanie", "Steph dialogue");
+  NPC *rose = new NPC("Rose", "Rose dialogue");
+  NPC *brent = new NPC("Brent", "Brent dialogue");
+  NPC *craig2 = new NPC("Craig", "Craig dialogue 2");
+
+  /**
+   * @brief setter for currentNode
+   * @param [in] current node the current room
+   * @throw de_trop_nullptr if currentNode is nullptr
+   */
+  void setCurrentNode(RoomNode *currentNode);
+
+  /**
+   * @brief setter for previousNode
+   * @param [in] previous node the previous room
+   *
+   */
+  void setPreviousNode(RoomNode *previousNode);
+
+  /**
+   * @brief getter for currentNode
+   */
+  RoomNode *getCurrentNode();
+
+  /**
+   * @brief getter for previousNode
+   */
+  RoomNode *getPreviousNode();
+
+  /**
+   * @brief function to allow player to make an
+   * accusation.
+   */
+  void accuse();
+
+  /**
+   * @brief function to allow the user to interact with the inventory
+   */
+  void inventory();
+
+  /**
+   * @brief function to output a splash screen depending on
+   *  what stage of the game they are on
+   * @param [in] condition the number value corresponding to stage
+   *
+   */
+  void displaySplashScreen(int condition);
+
+  char getRoomActionChoice();
+
+  /**
+   * @brief function to change the current room the player is in
+   */
+  void moveRoom();
+
+  /**
+   * @brief function to allow the user to interact with the room
+   */
+  void interact();
+
+  /**
+   * @brief function to get a list of rooms that the current one is
+   * actually connected to.
+   */
+  std::vector<unsigned> getPathways();
+
+  /**
+   * @brief function to list the possible rooms the player could move to.
+   * @param [in] pathways a list of unsigned values corresponding to the
+   * rooms the current room is connected to.
+   * @throw bad_input if an element in pathways is greater than 5.
+   */
+  void listRoomOptions(std::vector<unsigned> pathways);
+
+  void setRoomState();
+  // void readData(std::string&, std::string&, std::string&
+  //             , std::string start, std::string end);
+
+  // void readData(std::string&, std::string&
+  //             , std::string start, std::string end);
+};
+
+#endif
